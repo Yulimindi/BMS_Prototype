@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>입금 페이지</h1>
+	<hr>
+	<form th:action="@{/member/deposit}" method="post">
+		입금 액수<input type="text" name="amount">
+		<input type="submit" value="입금하기">
+	</form>
+</body>
+</html>

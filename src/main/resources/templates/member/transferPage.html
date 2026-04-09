@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>송금 페이지</h1>
+	<hr>
+	<form th:action="@{/member/deposit}" method="post">
+		송금할 계좌<input type="text" name="receiver" id="account"><button type="button" onclick="check()">예금주 확인</button><p id="p"></p>
+		송금 액수<input type="text" name="amount">
+		<input type="submit" value="송금하기">
+	</form>
+	
+	<script>
+	let state = false;
+	const p = document.querySelector("#p"); 
+		function check() {
+			let state = false;
+			const account = document.querySelector("#account").value;
+			fetch("/member/checkReceiver?receiver=" + account)
+			.then(data => data.text())
+			.then(data => {
+				if(data == "none") {
+					let state = false;
+					p.innerHTML = "없는 계좌 번호입니다.";
+				} else if(data == "same") {
+					let state = false;
+					p.innerHTML = "내 계좌입니다. 입금 기능을 이용해주세요.";
+				} else {
+					p.innerHTML = "예금주 : " + data;
+					let state = true;
+				}
+			})
+		}
+	</script>
+</body>
+</html>

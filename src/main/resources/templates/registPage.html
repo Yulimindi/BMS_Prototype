@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>회원가입 페이지</h1>
+	<hr>
+	<form th:action="@{/regist}" method="post" id="frm">
+		아이디<input type="text" name="id" id="selectid"><button type="button" onclick="checkId()">아이디 중복 확인</button>
+		<p id="p"></p>
+		비밀번호<input type="password" name="password"><br>
+		이름<input type="text" name="username"><br>
+		역할<select name="role">
+			<option value="ROLE_MEMBER">회원</option>
+			<option value="ROLE_ADMIN">관리자</option>
+		</select><br>
+		<input type="submit" value="가입">
+	</form>
+	
+	<script>
+	
+	const p = document.querySelector("#p");
+	let state = false;
+	
+	function checkId() {
+		state = false;
+		const id = document.querySelector("#selectid").value;
+		fetch("/checkId?id=" + id)
+		.then(data => data.text())
+		.then(data => {
+			if(data == 'alreadyused') {
+				state = false;
+				p.innerHTML = "이미 사용중인 아이디입니다.";
+			} else {
+				state = true;
+				p.innerHTML = "사용 가능한 아이디입니다.";
+			}
+		})
+	}
+	
+	const frm = document.querySelector("#frm");
+	frm.addEventListener("submit", (e) => {
+		if(state == false) {
+			e.preventDefault();
+			alert("아이디 중복 확인을 해주세요.");
+		}
+	})
+	
+	</script>
+</body>
+</html>
