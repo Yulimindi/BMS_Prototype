@@ -1,17 +1,168 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>BNK Busan Bank 스타일 페이지</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #fff;
+            border-bottom: 2px solid #ED1C24;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: #ED1C24;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            background-color: #fff1f1;
+            color: #ED1C24;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            border-left: 5px solid #ED1C24;
+            padding-left: 15px;
+            margin-bottom: 25px;
+            font-size: 20px;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        thead {
+            background-color: #fdfdfd;
+            border-top: 2px solid #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead td {
+            padding: 15px;
+            font-weight: 600;
+            color: #444;
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #fff9f9;
+        }
+
+        tbody td {
+            padding: 15px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .btn-view {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #666;
+            color: #fff !important;
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 3px;
+        }
+
+        .btn-view:hover {
+            background-color: #ED1C24;
+        }
+
+        hr {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-	<h1>인덱스 페이지</h1>
-	<hr>
-	
-	<script th:inline="javascript">
-		if([[${regist}]] != null) {
-			alert([[${regist}]]);
-		}
-	</script>
+    <header>
+        <h1>BNK 부산은행</h1>
+        <div class="nav-links">
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/loginPage}">로그인</a>
+            <a th:href="@{/registPage}">회원가입</a>
+            <a th:href="@{/member/memberPage}">멤버 전용</a>
+            <a th:href="@{/admin/adminPage}">관리자 전용</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>공지사항</h2>
+        <table>
+            <thead>
+                <tr>
+                    <td>제목</td>
+                    <td>작성일자</td>
+                    <td>자세히 보기</td>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr th:each="lists : ${list}">
+                    <td th:text="${lists.title}" style="text-align: left; padding-left: 30px;"></td>
+                    <td th:text="${lists.createdAt}" style="color: #888;"></td>
+                    <td>
+                        <a th:href="@{/notice(id=${lists.nid})}" class="btn-view">공지 확인</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <script th:inline="javascript">
+        if([[${regist}]] != null) {
+            alert([[${regist}]]);
+        }
+        
+        if([[${logout}]] != null) {
+            alert([[${logout}]]);
+        }
+    </script>
 </body>
 </html>

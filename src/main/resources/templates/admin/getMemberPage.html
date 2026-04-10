@@ -1,11 +1,186 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>BNK Busan Bank - 회원 관리 시스템</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #fff;
+            border-bottom: 2px solid #ED1C24;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 20px;
+            color: #222;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            text-decoration: none;
+            color: #666;
+            font-size: 13px;
+            padding: 6px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #ED1C24;
+            color: #fff;
+            border-color: #ED1C24;
+        }
+
+        .admin-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ED1C24;
+            display: flex;
+            align-items: center;
+        }
+
+        .table-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            background-color: #ED1C24;
+            margin-right: 10px;
+        }
+
+        hr { display: none; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        thead {
+            background-color: #fcfcfc;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #eee;
+        }
+
+        thead td {
+            padding: 15px;
+            font-weight: 700;
+            color: #444;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f2f2f2;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background-color: #fff9f9;
+        }
+
+        tbody td {
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background-color: #eee;
+            color: #666;
+        }
+
+        .btn-detail {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #333;
+            color: #fff !important;
+            text-decoration: none;
+            font-size: 12px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-detail:hover {
+            background-color: #ED1C24;
+        }
+
+        .table-footer {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #999;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
-	<h1>전체 회원 목록 조회</h1>
-	<hr>
+
+    <header>
+        <h1>BNK 관리자 전용</h1>
+        <a th:href="@{/logout}" class="btn-logout">로그아웃</a>
+    </header>
+
+    <div class="admin-container">
+        <div class="table-title">전체 회원 목록 조회</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <td>아이디</td>
+                    <td>이름</td>
+                    <td>권한(ROLE)</td>
+                    <td>관리</td>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr th:each="lists : ${list}">
+                    <td th:text="${lists.id}" style="font-weight: 600; color: #222;"></td>
+                    <td th:text="${lists.username}"></td>
+                    <td>
+                        <span class="role-badge" th:text="${lists.role}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/admin/oneMemberPage(id=${lists.id})}" class="btn-detail">자세히 보기</a>
+                    </td>		
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="table-footer">
+            * 등록된 회원의 정보를 수정하거나 조회하려면 '자세히 보기'를 클릭하십시오.
+        </div>
+    </div>
+
 </body>
 </html>

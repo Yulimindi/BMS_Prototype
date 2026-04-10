@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,5 +65,16 @@ public class MemberController {
 			return "redirect:/loginPage?login=false";
 		}
 		
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpServletResponse response) {
+		Cookie cookie = new Cookie("token", null);
+		cookie.setMaxAge(0);
+		cookie.setPath("/");
+		cookie.setHttpOnly(true);
+		
+		response.addCookie(cookie);
+		return "redirect:/?logout=true";
 	}
 }

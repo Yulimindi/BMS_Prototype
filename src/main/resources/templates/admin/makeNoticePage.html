@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BNK Busan Bank - 공지사항 작성</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .admin-container {
+            max-width: 800px;
+            margin: 60px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #222;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        h1::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background-color: #ED1C24;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        hr {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #ED1C24;
+            box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+        }
+
+        input[name="content"] {
+            min-height: 200px;
+            vertical-align: top;
+        }
+
+        .button-area {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        input[type="submit"] {
+            padding: 12px 60px;
+            background-color: #ED1C24;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c8161d;
+        }
+
+        .info-text {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <h1>공지사항 등록</h1>
+        <p class="info-text">* 고객들에게 전달될 공지사항의 제목과 내용을 정확히 입력해 주세요.</p>
+        
+        <form th:action="@{/admin/createNotice}" method="post">
+            <div class="form-group">
+                <label>공지 제목</label>
+                <input type="text" name="title" placeholder="제목을 입력하세요">
+            </div>
+            
+            <div class="form-group">
+                <label>공지 내용</label>
+                <input type="text" name="content" placeholder="공지할 내용을 상세히 입력하세요">
+            </div>
+            
+            <div class="button-area">
+                <input type="submit" value="공지 생성">
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

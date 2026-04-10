@@ -28,10 +28,11 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		
+		http.csrf(csrf -> csrf.disable());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		
 		http.formLogin(form -> form.disable());
+		http.logout(form -> form.disable());
 		http.httpBasic(AbstractHttpConfigurer::disable);
 		
 		http.authorizeHttpRequests(auth -> auth

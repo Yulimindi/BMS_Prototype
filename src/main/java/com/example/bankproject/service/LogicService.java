@@ -1,9 +1,14 @@
 package com.example.bankproject.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.bankproject.dto.GetAccountDto;
+import com.example.bankproject.dto.TransactionDto;
+import com.example.bankproject.entity.TransactionEntity;
 import com.example.bankproject.jwt.JwtUtil;
 import com.example.bankproject.repository.AccountRepository;
 import com.example.bankproject.repository.TransactionRepository;
@@ -18,6 +23,32 @@ public class LogicService {
 	final TransactionRepository tr;
 	final AccountRepository ar;
 	final JwtUtil util;
+	
+	public boolean checkDepositState(String token) {
+		String id = util.getId(token);
+		Long accountId = ar.findAccountId(id);
+		String result = ar.getState(accountId);
+		if(result.equals("YES")) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+	public boolean checkTransferState(String token, Long receiver) {
+		String id = util.getId(token);
+		Long accountId = ar.findAccountId(id);
+		String result = ar.getState(accountId);
+		if(result.equals("YES")) {
+			if(ar.getState(receiver).equals("YES")) {
+				return true;
+			}
+			return false;
+		} else {
+			return false;
+		}
+	}
 	
 	@Transactional
 	public boolean deposit(Integer amount, String token) {
@@ -36,17 +67,25 @@ public class LogicService {
 	}
 	
 	@Transactional
-	public String transfer(Integer amount, String token, Long receiver) {
-		
-		return "";
+	public boolean transfer(Integer amount, String token, Long receiver) {
+		String id = util.getId(token);
+		Long accountId = ar.findAccountId(id);
+		Integer balance = ar.getBalance(accountId);
+		if(balance - amount < 0) {
+			return false;
+		}
+		balance = balance - amount;
+		ar.deposit(accountId, balance);
+		Integer receiverBalance = ar.getBalance(receiver);
+		ar.deposit(receiver, amount + receiverBalance);
+		tr.saveTransfer(accountId, receiver, amount);
+		return true;
 	}
 	
 	public String checkReceiver(@RequestParam("receiver") Long receiver, String token) {
 		String id = util.getId(token);
 		Long accountId = ar.findAccountId(id);
 		if(ar.existsById(receiver)) {
-			System.out.println("내 아이디 : " + accountId);
-			System.out.println("송금할 아이디 : " + ar.findById(receiver).get().getAccountNumber());
 			if(ar.findById(receiver).get().getAccountNumber().equals(accountId)) {
 				return "same";
 			}
@@ -57,7 +96,15 @@ public class LogicService {
 		
 	}
 
-	public String account() {
-		return "";
+	public GetAccountDto account(String token) {
+		String id = util.getId(token);
+		Long accountId = ar.findAccountId(id);
+		Integer balance = ar.getBalance(accountId);
+		List<TransactionEntity> entites = tr.getTransaction(accountId);
+		List<TransactionDto> dto = entites.stream().map(entity -> entity.entityToDto()).toList();
+		
+		GetAccountDto dtos = new GetAccountDto(balance, dto);
+		return dtos;
 	}
+	
 }

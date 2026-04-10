@@ -1,11 +1,194 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>BNK Busan Bank - 회원 상세 관리</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #fff;
+            border-bottom: 2px solid #ED1C24;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 18px;
+            color: #222;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            text-decoration: none;
+            color: #666;
+            font-size: 13px;
+            padding: 6px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #ED1C24;
+            color: #fff;
+            border-color: #ED1C24;
+        }
+
+        .admin-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        h3 {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #222;
+            display: flex;
+            align-items: center;
+        }
+
+        h3 strong {
+            color: #ED1C24;
+            margin-right: 5px;
+        }
+
+        hr { display: none; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        thead {
+            background-color: #fcfcfc;
+            border-top: 2px solid #333;
+            border-bottom: 1px solid #eee;
+        }
+
+        thead td {
+            padding: 15px;
+            font-weight: 700;
+            color: #444;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        tbody td {
+            padding: 20px 15px;
+            text-align: center;
+            font-size: 15px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        .status-yes { color: #28a745; font-weight: 700; }
+        .status-no { color: #ED1C24; font-weight: 700; }
+
+        .btn-action {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-freeze {
+            background-color: #fff;
+            color: #ED1C24;
+            border: 1px solid #ED1C24;
+        }
+
+        .btn-freeze:hover {
+            background-color: #ED1C24;
+            color: #fff;
+        }
+
+        .btn-unfreeze {
+            background-color: #444;
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        .btn-unfreeze:hover {
+            background-color: #222;
+        }
+
+        .info-footer {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #888;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+        }
+    </style>
 </head>
 <body>
-	<h1>세부 회원 페이지</h1>
-	<hr>
+
+    <header>
+        <h1>BNK 회원 상세 관리 시스템</h1>
+        <a th:href="@{/logout}" class="btn-logout">로그아웃</a>
+    </header>
+
+    <div class="admin-container">
+        <h3><strong>[[${name}]]</strong>님의 정보</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <td>계좌번호</td>
+                    <td>잔액</td>
+                    <td>아이디</td>
+                    <td>상태</td>
+                    <td>계좌 제어</td>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr th:each="lists : ${list}">
+                    <td th:text="${lists.accountNumber}" style="font-family: monospace; font-weight: 600;"></td>
+                    <td th:text="${lists.balance}" style="text-align: right; padding-right: 40px;"></td>
+                    <td th:text="${lists.member_id}"></td>
+                    <td>
+                        <span th:class="${lists.status == 'YES' ? 'status-yes' : 'status-no'}" 
+                              th:text="${lists.status == 'YES' ? '정상' : '동결중'}">
+                        </span>
+                    </td>
+                    
+                    <td>
+                        <th:block th:if="${lists.status} == 'YES'">
+                            <a th:href="@{/admin/stateYes(id=${lists.member_id})}" class="btn-action btn-freeze">동결하기</a>
+                        </th:block>
+                        <th:block th:unless="${lists.status} == 'YES'">
+                            <a th:href="@{/admin/stateNo(id=${lists.member_id})}" class="btn-action btn-unfreeze">동결풀기</a>
+                        </th:block>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-footer">
+            * <strong>정상(YES):</strong> 현재 계좌 이체 및 출금이 가능한 상태입니다.<br>
+            * <strong>동결중(NO):</strong> 사고 예방 등을 위해 계좌 이용이 일시 중지된 상태입니다.
+        </div>
+    </div>
+
 </body>
 </html>

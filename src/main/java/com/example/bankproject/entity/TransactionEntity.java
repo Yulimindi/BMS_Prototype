@@ -1,10 +1,11 @@
 package com.example.bankproject.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.example.bankproject.dto.TransactionDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,4 +51,8 @@ public class TransactionEntity {
 	
 	@Column
 	private Integer amount;
+	
+	public TransactionDto entityToDto() {
+		return TransactionDto.builder().id(id).sender_account(this.sender_account.getAccountNumber()).receiver_account(this.receiver_account.getAccountNumber()).createdAt(createdAt).type(type).amount(amount).build();
+	}
 }

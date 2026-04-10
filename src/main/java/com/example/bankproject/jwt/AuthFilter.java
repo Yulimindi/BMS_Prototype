@@ -56,6 +56,7 @@ public class AuthFilter extends OncePerRequestFilter {
 		
 		
 		if(!ju.isValid(token)) {
+			System.out.println("문제 생겼다잉 여기 필터");
 			response.sendRedirect("/msg=notoken");
 			return;
 		}

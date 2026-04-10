@@ -1,53 +1,202 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>BNK 부산은행 - 회원가입</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .regist-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #ED1C24;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        hr { display: none; }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #ED1C24;
+        }
+
+        .id-check-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-check {
+            white-space: nowrap;
+            padding: 0 15px;
+            background-color: #666;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .btn-check:hover {
+            background-color: #444;
+        }
+
+        #p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            min-height: 18px;
+            color: #ED1C24;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #ED1C24;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c8161d;
+        }
+
+        .footer-info {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-	<h1>회원가입 페이지</h1>
-	<hr>
-	<form th:action="@{/regist}" method="post" id="frm">
-		아이디<input type="text" name="id" id="selectid"><button type="button" onclick="checkId()">아이디 중복 확인</button>
-		<p id="p"></p>
-		비밀번호<input type="password" name="password"><br>
-		이름<input type="text" name="username"><br>
-		역할<select name="role">
-			<option value="ROLE_MEMBER">회원</option>
-			<option value="ROLE_ADMIN">관리자</option>
-		</select><br>
-		<input type="submit" value="가입">
-	</form>
+
+    <div class="regist-container">
+        <h1>BNK 부산은행</h1>
+        <div class="subtitle">안전한 금융거래를 위해 회원정보를 입력해 주세요.</div>
+
+        <form th:action="@{/regist}" method="post" id="frm">
+            <div class="form-group">
+                <label>아이디</label>
+                <div class="id-check-wrapper">
+                    <input type="text" name="id" id="selectid" placeholder="아이디 입력">
+                    <button type="button" class="btn-check" onclick="checkId()">중복 확인</button>
+                </div>
+                <p id="p"></p>
+            </div>
+
+            <div class="form-group">
+                <label>비밀번호</label>
+                <input type="password" name="password" placeholder="비밀번호 설정">
+            </div>
+
+            <div class="form-group">
+                <label>이름</label>
+                <input type="text" name="username" placeholder="성함을 입력하세요">
+            </div>
+
+            <div class="form-group">
+                <label>회원 구분</label>
+                <select name="role">
+                    <option value="ROLE_MEMBER">일반 회원</option>
+                    <option value="ROLE_ADMIN">관리자</option>
+                </select>
+            </div>
+
+            <input type="submit" value="가입하기">
+        </form>
+
+        <div class="footer-info">
+            본 서비스는 BNK 부산은행의 보안 정책을 준수합니다.
+        </div>
+    </div>
 	
-	<script>
-	
-	const p = document.querySelector("#p");
-	let state = false;
-	
-	function checkId() {
-		state = false;
-		const id = document.querySelector("#selectid").value;
-		fetch("/checkId?id=" + id)
-		.then(data => data.text())
-		.then(data => {
-			if(data == 'alreadyused') {
-				state = false;
-				p.innerHTML = "이미 사용중인 아이디입니다.";
-			} else {
-				state = true;
-				p.innerHTML = "사용 가능한 아이디입니다.";
-			}
-		})
-	}
-	
-	const frm = document.querySelector("#frm");
-	frm.addEventListener("submit", (e) => {
-		if(state == false) {
-			e.preventDefault();
-			alert("아이디 중복 확인을 해주세요.");
-		}
-	})
-	
-	</script>
+    <script>
+    const p = document.querySelector("#p");
+    let state = false;
+    
+    function checkId() {
+        state = false;
+        const id = document.querySelector("#selectid").value;
+        if(!id) {
+            p.innerHTML = "아이디를 먼저 입력해 주세요.";
+            return;
+        }
+        fetch("/checkId?id=" + id)
+        .then(data => data.text())
+        .then(data => {
+            if(data == 'alreadyused') {
+                state = false;
+                p.style.color = "#ED1C24"; // 빨간색
+                p.innerHTML = "이미 사용중인 아이디입니다.";
+            } else {
+                state = true;
+                p.style.color = "#28a745"; // 성공 시 초록색 (은행의 긍정적 알림 컬러)
+                p.innerHTML = "사용 가능한 아이디입니다.";
+            }
+        })
+    }
+    
+    const frm = document.querySelector("#frm");
+    frm.addEventListener("submit", (e) => {
+        if(state == false) {
+            e.preventDefault();
+            alert("아이디 중복 확인을 해주세요.");
+        }
+    })
+    </script>
 </body>
 </html>

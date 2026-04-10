@@ -29,4 +29,23 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long>{
     @Transactional
 	@Query(value = "select balance from bank_account_tbl where ACCOUNT_NUMBER = :accountId", nativeQuery = true)
 	int getBalance(@Param("accountId") Long accountId);
+    
+    @Transactional
+	@Query(value = "select * from bank_account_tbl where ACCOUNT_NUMBER = :accountId", nativeQuery = true)
+	AccountEntity getAccount(@Param("accountId") Long accountId);
+    
+    @Transactional
+	@Query(value = "select status from bank_account_tbl where ACCOUNT_NUMBER = :accountId", nativeQuery = true)
+	String getState(@Param("accountId") Long accountId);
+    
+    @Modifying(clearAutomatically = true)
+    @Transactional
+	@Query(value = "update bank_account_tbl set status = 'NO' where ACCOUNT_NUMBER = :accountId", nativeQuery = true)
+    int changeNo(@Param("accountId") Long accountId);
+    
+    @Modifying(clearAutomatically = true)
+    @Transactional
+	@Query(value = "update bank_account_tbl set status = 'YES' where ACCOUNT_NUMBER = :accountId", nativeQuery = true)
+    int changeYes(@Param("accountId") Long accountId);
+    
 }

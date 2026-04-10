@@ -1,39 +1,232 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>BNK 부산은행 - 이체/송금</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ED1C24;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-size: 20px;
+            color: #ED1C24;
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .btn-logout {
+            text-decoration: none;
+            color: #666;
+            font-size: 13px;
+            padding: 6px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #eee;
+        }
+
+        .transfer-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #222;
+            text-align: center;
+        }
+
+        hr { display: none; }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ED1C24;
+        }
+
+        .btn-check {
+            white-space: nowrap;
+            padding: 0 15px;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn-check:hover {
+            background-color: #333;
+        }
+
+        #p {
+            margin: 8px 0 0;
+            font-size: 13px;
+            font-weight: 500;
+            color: #ED1C24;
+            min-height: 19px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            background-color: #ED1C24;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c8161d;
+        }
+
+        input[type="submit"]:active {
+            transform: scale(0.98);
+        }
+
+        .transfer-footer {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #777;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
-	<h1>송금 페이지</h1>
-	<hr>
-	<form th:action="@{/member/deposit}" method="post">
-		송금할 계좌<input type="text" name="receiver" id="account"><button type="button" onclick="check()">예금주 확인</button><p id="p"></p>
-		송금 액수<input type="text" name="amount">
-		<input type="submit" value="송금하기">
-	</form>
+
+    <header>
+        <h1>BNK 부산은행</h1>
+        <a th:href="@{/logout}" class="btn-logout">안전 로그아웃</a>
+    </header>
+
+    <div class="transfer-container">
+        <h2>이체하기</h2>
+        
+        <form th:action="@{/member/transfer}" method="post" id="frm">
+            <div class="form-group">
+                <label>받는 분 계좌번호</label>
+                <div class="input-wrapper">
+                    <input type="text" name="receiver" id="account" placeholder="숫자만 입력">
+                    <button type="button" class="btn-check" onclick="check()">예금주 확인</button>
+                </div>
+                <p id="p"></p>
+            </div>
+
+            <div class="form-group">
+                <label>송금 금액</label>
+                <input type="text" name="amount" placeholder="0">
+            </div>
+
+            <input type="submit" value="송금하기">
+        </form>
+
+        <div class="transfer-footer">
+            • 이체 전 예금주 성명을 반드시 확인하시기 바랍니다.<br>
+            • 착오송금 시 반환 청구가 어려울 수 있으니 주의해 주세요.
+        </div>
+    </div>
 	
-	<script>
-	let state = false;
-	const p = document.querySelector("#p"); 
-		function check() {
-			let state = false;
-			const account = document.querySelector("#account").value;
-			fetch("/member/checkReceiver?receiver=" + account)
-			.then(data => data.text())
-			.then(data => {
-				if(data == "none") {
-					let state = false;
-					p.innerHTML = "없는 계좌 번호입니다.";
-				} else if(data == "same") {
-					let state = false;
-					p.innerHTML = "내 계좌입니다. 입금 기능을 이용해주세요.";
-				} else {
-					p.innerHTML = "예금주 : " + data;
-					let state = true;
-				}
-			})
-		}
-	</script>
+    <script>
+    let state = false;
+    const p = document.querySelector("#p"); 
+
+    function check() {
+        state = false;
+        const account = document.querySelector("#account").value;
+        
+        if(!account) {
+            p.style.color = "#ED1C24";
+            p.innerHTML = "계좌번호를 입력해 주세요.";
+            return;
+        }
+
+        fetch("/member/checkReceiver?receiver=" + account)
+        .then(data => data.text())
+        .then(data => {
+            if(data == "none") {
+                state = false;
+                p.style.color = "#ED1C24";
+                p.innerHTML = "존재하지 않는 계좌입니다.";
+            } else if(data == "same") {
+                state = false;
+                p.style.color = "#ED1C24";
+                p.innerHTML = "본인 계좌로는 이체할 수 없습니다.";
+            } else {
+                state = true;
+                p.style.color = "#28a745"; // 성공 시 초록색
+                p.innerHTML = "예금주 : " + data + " (확인 완료)";
+            }
+        })
+    }
+    
+    const frm = document.querySelector("#frm");
+    frm.addEventListener("submit", (e) => {
+        if(state == false) {
+            e.preventDefault();
+            alert("예금주 확인이 필요합니다.");
+        }
+    })
+    </script>
 </body>
 </html>
