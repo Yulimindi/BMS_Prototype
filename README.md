@@ -1,4 +1,4 @@
-<h1>🏦 [Project] Spring Boot 기반 권한별 은행 시스템 백엔드 구현</h1>
+<h1>🏦 Spring Boot 기반 권한별 은행 시스템 백엔드 구현</h1>
 
 <p>
   <img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white">
